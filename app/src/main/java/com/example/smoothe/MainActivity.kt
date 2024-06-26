@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.smoothe.ui.theme.SmootheTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.DrawScopeMarker
@@ -53,18 +61,12 @@ import androidx.compose.ui.unit.dp
 import com.example.smoothe.R.drawable.spa_icon_foreground
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SmootheTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-
-                }
-            }
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
+            MySootheApp(windowSize = windowSizeClass)
         }
     }
 }
@@ -240,7 +242,8 @@ fun ScreenContentPreview() {
 }
 @Composable
 private fun BottomNavigation(modifier: Modifier=Modifier){
-    NavigationBar(modifier=modifier) {
+    NavigationBar( containerColor = MaterialTheme.colorScheme.surfaceVariant ,
+        modifier=modifier) {
         NavigationBarItem(
             selected = true,
             onClick = {},
@@ -274,7 +277,75 @@ private fun BottomNavigation(modifier: Modifier=Modifier){
         )
     }
 }
+@Composable
+fun MySootheAppPortrait(){
+    SmootheTheme {
+        Scaffold (bottomBar = { BottomNavigation()}){
+            padding -> HomeScreen(Modifier.padding(padding))
+        }
+    }
+}
 
+@Composable
+private fun SootheNavigationRail(modifier: Modifier = Modifier){
+    NavigationRail(
+        modifier = modifier.padding(start = 8.dp, end = 8.dp),
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier.fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NavigationRailItem(
+                selected = true,
+                onClick = { },
+                icon = {
+                    Icon(imageVector = Icons.Default.Home,
+                contentDescription = null)
+                },
+                label = {
+                    Text(stringResource( R.string.bottom_navigation_home))
+                }
+            )
+            NavigationRailItem(
+                selected = false,
+                onClick = { },
+                icon = {
+                    Icon(imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null)
+                },
+                label = {
+                    Text(stringResource( R.string.bottom_navigation_profile))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun MySootheAppLandscape(){
+        SmootheTheme {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                Row {
+                    SootheNavigationRail()
+                    HomeScreen()
+                }
+            }
+
+        }
+}
+@Composable
+fun MySootheApp(windowSize: WindowSizeClass){
+    when(windowSize.widthSizeClass){
+        WindowWidthSizeClass.Compact -> {
+            MySootheAppPortrait()
+        }
+        WindowWidthSizeClass.Expanded ->{
+            MySootheAppLandscape()
+        }
+    }
+}
 
 private val favoriteCollectionData = listOf(
     R.drawable.fc1_short_mantras to R.string.fc1_short_mantras,
@@ -282,7 +353,7 @@ private val favoriteCollectionData = listOf(
     R.drawable.fc3_stress_and_anxiety to R.string.fc3_stress_and_anxiety,
     R.drawable.fc4_self_massage to R.string.fc4_self_massage,
     R.drawable.fc5_overwhelmed to R.string.fc5_overwhelmed,
-    R.drawable.fc6_nightly_wind_down to R.drawable.fc6_nightly_wind_down).map{DrawableStringPair(it.first, it.second)}
+    R.drawable.fc6_nightly_wind_down to R.string.fc6_nightly_wind_down).map{DrawableStringPair(it.first, it.second)}
 
 
 private val alignYourBodyData = listOf(
