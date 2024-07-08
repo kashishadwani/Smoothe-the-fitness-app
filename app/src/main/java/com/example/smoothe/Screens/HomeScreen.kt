@@ -1,7 +1,5 @@
-package com.example.smoothe
+package com.example.smoothe.Screens
 
-import android.graphics.drawable.Drawable
-import android.icu.text.CaseMap.Title
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -53,12 +50,11 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.drawscope.DrawScopeMarker
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.smoothe.R.drawable.spa_icon_foreground
+import com.example.smoothe.R
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -280,7 +276,7 @@ private fun BottomNavigation(modifier: Modifier=Modifier){
 @Composable
 fun MySootheAppPortrait(){
     SmootheTheme {
-        Scaffold (bottomBar = { BottomNavigation()}){
+        Scaffold (bottomBar = { BottomNavigation() }){
             padding -> HomeScreen(Modifier.padding(padding))
         }
     }
@@ -305,7 +301,7 @@ private fun SootheNavigationRail(modifier: Modifier = Modifier){
                 contentDescription = null)
                 },
                 label = {
-                    Text(stringResource( R.string.bottom_navigation_home))
+                    Text(stringResource(R.string.bottom_navigation_home))
                 }
             )
             NavigationRailItem(
@@ -316,7 +312,7 @@ private fun SootheNavigationRail(modifier: Modifier = Modifier){
                         contentDescription = null)
                 },
                 label = {
-                    Text(stringResource( R.string.bottom_navigation_profile))
+                    Text(stringResource(R.string.bottom_navigation_profile))
                 }
             )
         }
@@ -353,7 +349,8 @@ private val favoriteCollectionData = listOf(
     R.drawable.fc3_stress_and_anxiety to R.string.fc3_stress_and_anxiety,
     R.drawable.fc4_self_massage to R.string.fc4_self_massage,
     R.drawable.fc5_overwhelmed to R.string.fc5_overwhelmed,
-    R.drawable.fc6_nightly_wind_down to R.string.fc6_nightly_wind_down).map{DrawableStringPair(it.first, it.second)}
+    R.drawable.fc6_nightly_wind_down to R.string.fc6_nightly_wind_down
+).map{ DrawableStringPair(it.first, it.second) }
 
 
 private val alignYourBodyData = listOf(
