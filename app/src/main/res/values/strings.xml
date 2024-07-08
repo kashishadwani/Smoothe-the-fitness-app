@@ -17,4 +17,20 @@
     <string name="favorite_collections">Favorite Collections</string>
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_profile">Profile</string>
+    <string name="heythere">Hey there,</string>
+    <string name="create_account">Create an Account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="Password">Password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="terms_and_conditions">By continuing you accept our privacy policy and terms of Use</string>
+    <string name="terms_and_conditions_header">terms of use</string>
+    <string name="register">Register</string>
+    <string name="go_to_login">Already have an account? Login</string>
+    <string name="login">Login</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot your password</string>
 </resources>
