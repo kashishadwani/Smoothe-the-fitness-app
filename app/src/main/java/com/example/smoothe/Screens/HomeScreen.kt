@@ -1,8 +1,10 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 package com.example.smoothe.Screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.app.Activity
+import com.example.smoothe.R
+
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -51,22 +53,15 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.smoothe.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.smoothe.HomeViewModel
 
-class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            val windowSizeClass = calculateWindowSizeClass(activity = this)
-            MySootheApp(windowSize = windowSizeClass)
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier
@@ -75,12 +70,12 @@ fun SearchBar(
         value = "",
         onValueChange = {},
         leadingIcon = {
-                      Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            Icon(imageVector = Icons.Default.Search, contentDescription = null)
         },
         colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.colorScheme.surface,
             focusedContainerColor = MaterialTheme.colorScheme.surface),
         placeholder = {
-                      Text(stringResource(id = R.string.placeholder_search))
+            Text(stringResource(id = R.string.placeholder_search))
         },
         modifier = modifier
             .fillMaxWidth()
@@ -96,18 +91,18 @@ fun SearchBarPreview(){
 @Composable
 fun AlignYourBodyElement(@DrawableRes drawable: Int,
                          @StringRes text: Int,
-    modifier: Modifier=Modifier
+                         modifier: Modifier=Modifier
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ){
-       Image(painter = painterResource(drawable), contentDescription = null,
-           contentScale = ContentScale.Crop,
-           modifier = Modifier
-               .size(88.dp)
-               .clip(CircleShape)
-       )
+        Image(painter = painterResource(drawable), contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(88.dp)
+                .clip(CircleShape)
+        )
         Text(text = stringResource(text),
             modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp)
         )
@@ -127,7 +122,7 @@ fun AlignYourBodyElementPreview(){
 @Composable
 fun FavoriteCollectionCard( @DrawableRes drawable: Int,
                             @StringRes text: Int,
-    modifier: Modifier = Modifier){
+                            modifier: Modifier = Modifier){
     Surface(shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier) {
@@ -183,7 +178,7 @@ fun FavoriteCollectionsGrid(modifier : Modifier = Modifier){
         modifier = modifier
             .height(168.dp)){
         items(favoriteCollectionData){
-            item -> FavoriteCollectionCard(item.drawable, item.text,Modifier.height(80.dp))
+                item -> FavoriteCollectionCard(item.drawable, item.text,Modifier.height(80.dp))
         }
     }
 }
@@ -216,7 +211,7 @@ fun HomesectionPreview(){
     }
 }
 @Composable
-fun HomeScreen(modifier: Modifier=Modifier){
+fun HomeScreenContent(modifier: Modifier=Modifier){
     Column(modifier) {
         Spacer(Modifier.height(16.dp))
         SearchBar(Modifier.padding(horizontal = 16.dp))
@@ -233,11 +228,11 @@ fun HomeScreen(modifier: Modifier=Modifier){
 @Composable
 fun ScreenContentPreview() {
     SmootheTheme {
-        HomeScreen()
+        HomeScreenContent()
     }
 }
 @Composable
-private fun BottomNavigation(modifier: Modifier=Modifier){
+private fun BottomNavigation(modifier: Modifier=Modifier,navController: NavHostController=NavHostController(LocalContext.current)){
     NavigationBar( containerColor = MaterialTheme.colorScheme.surfaceVariant ,
         modifier=modifier) {
         NavigationBarItem(
@@ -245,8 +240,8 @@ private fun BottomNavigation(modifier: Modifier=Modifier){
             onClick = {},
             icon = {
                 Icon(
-            imageVector = Icons.Default.Home,
-            contentDescription = null)
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null)
             },
             label = {
                 Text(
@@ -277,13 +272,13 @@ private fun BottomNavigation(modifier: Modifier=Modifier){
 fun MySootheAppPortrait(){
     SmootheTheme {
         Scaffold (bottomBar = { BottomNavigation() }){
-            padding -> HomeScreen(Modifier.padding(padding))
+                padding -> HomeScreenContent(Modifier.padding(padding))
         }
     }
 }
 
 @Composable
-private fun SootheNavigationRail(modifier: Modifier = Modifier){
+private fun SootheNavigationRail(modifier: Modifier = Modifier, navController: NavHostController=NavHostController(LocalContext.current)){
     NavigationRail(
         modifier = modifier.padding(start = 8.dp, end = 8.dp),
         containerColor = MaterialTheme.colorScheme.background
@@ -295,10 +290,10 @@ private fun SootheNavigationRail(modifier: Modifier = Modifier){
         ) {
             NavigationRailItem(
                 selected = true,
-                onClick = { },
+                onClick = { navController.navigate("home_screen") },
                 icon = {
                     Icon(imageVector = Icons.Default.Home,
-                contentDescription = null)
+                        contentDescription = null)
                 },
                 label = {
                     Text(stringResource(R.string.bottom_navigation_home))
@@ -321,18 +316,20 @@ private fun SootheNavigationRail(modifier: Modifier = Modifier){
 
 @Composable
 fun MySootheAppLandscape(){
-        SmootheTheme {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                Row {
-                    SootheNavigationRail()
-                    HomeScreen()
-                }
+    SmootheTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Row {
+                SootheNavigationRail()
+                HomeScreenContent()
             }
-
         }
+
+    }
 }
 @Composable
-fun MySootheApp(windowSize: WindowSizeClass){
+fun HomeScreen(activity: Activity,windowSize: WindowSizeClass= calculateWindowSizeClass(activity),
+               homeViewModel: HomeViewModel = viewModel(),navController: NavHostController
+){
     when(windowSize.widthSizeClass){
         WindowWidthSizeClass.Compact -> {
             MySootheAppPortrait()

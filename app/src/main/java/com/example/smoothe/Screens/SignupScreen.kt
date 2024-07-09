@@ -1,9 +1,11 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class
+)
 
 package com.example.smoothe.Screens
 
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,7 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -64,73 +65,83 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.smoothe.Navigation.Screen
 import com.example.smoothe.Navigation.SmootheRouter
 import com.example.smoothe.R
-import com.example.smoothe.data.LoginViewModel
+import com.example.smoothe.data.signupViewModel
 import com.example.smoothe.data.UIEvent
 
 @Composable
-fun SignupScreen(loginViewModel: LoginViewModel = viewModel()) {
-    Surface (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(28.dp)
+fun SignupScreen(signupViewModel: signupViewModel = viewModel(),navController: NavHostController) {
+    Box(modifier = Modifier, contentAlignment = Alignment.Center){
+        Surface (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(28.dp)
         ){
-        Column(modifier = Modifier) {
-            NormaltextComponent(value = stringResource(id = R.string.heythere))
-            HeadingtextComponent(value = stringResource(id = R.string.create_account))
-            Spacer(modifier = Modifier.height(20.dp))
-            MyTextField(labelvalue = stringResource(id = R.string.first_name),
-                imageVector = Icons.Outlined.Person,
-                onTextSelected = {
-                    loginViewModel.onEvent(UIEvent.FirstNameChange(it))
-                },
-                errorStatus = loginViewModel.RegistrationUIState.value.firstNameError)
-            MyTextField(labelvalue = stringResource(id = R.string.last_name),
-                imageVector = Icons.Outlined.Person,
-                onTextSelected = {
-                    loginViewModel.onEvent(UIEvent.LastNameChange(it))
-                },
-                errorStatus = loginViewModel.RegistrationUIState.value.lastNameError)
-            MyTextField(labelvalue = stringResource(id = R.string.email),
-                imageVector = Icons.Outlined.Email,
-                onTextSelected = {
-                    loginViewModel.onEvent(UIEvent.EmailChange(it))
-                },
-                errorStatus = loginViewModel.RegistrationUIState.value.emailError)
-            PasswordTextField(labelvalue = stringResource(id = R.string.Password),
-                imageVector = Icons.Outlined.Lock,
-                onTextSelected = {
-                    loginViewModel.onEvent(UIEvent.PasswordChange(it))
-                },
-                errorStatus = loginViewModel.RegistrationUIState.value.passwordError)
-            CheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
-                onTextSelected = {
-                    SmootheRouter.navigateTo(Screen.termsandconditionsfile)
-                }
-            )
-            Spacer(modifier = Modifier.height(80.dp))
-            ButtonComponent(value = stringResource(id = R.string.register),
-                onButtonClicked = {
-                    loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+            Column(modifier = Modifier) {
+                NormaltextComponent(value = stringResource(id = R.string.heythere))
+                HeadingtextComponent(value = stringResource(id = R.string.create_account))
+                Spacer(modifier = Modifier.height(20.dp))
+                MyTextField(labelvalue = stringResource(id = R.string.first_name),
+                    imageVector = Icons.Outlined.Person,
+                    onTextSelected = {
+                        signupViewModel.onEvent(UIEvent.FirstNameChange(it))
+                    },
+                    errorStatus = signupViewModel.RegistrationUIState.value.firstNameError)
+                MyTextField(labelvalue = stringResource(id = R.string.last_name),
+                    imageVector = Icons.Outlined.Person,
+                    onTextSelected = {
+                        signupViewModel.onEvent(UIEvent.LastNameChange(it))
+                    },
+                    errorStatus = signupViewModel.RegistrationUIState.value.lastNameError)
+                MyTextField(labelvalue = stringResource(id = R.string.email),
+                    imageVector = Icons.Outlined.Email,
+                    onTextSelected = {
+                        signupViewModel.onEvent(UIEvent.EmailChange(it))
+                    },
+                    errorStatus = signupViewModel.RegistrationUIState.value.emailError)
+                PasswordTextField(labelvalue = stringResource(id = R.string.Password),
+                    imageVector = Icons.Outlined.Lock,
+                    onTextSelected = {
+                        signupViewModel.onEvent(UIEvent.PasswordChange(it))
+                    },
+                    errorStatus = signupViewModel.RegistrationUIState.value.passwordError)
+                CheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
+                    onTextSelected = {
+                        navController.navigate("terms_and_conditions")
+                    },
+                    onCheckedChange = {
+                        signupViewModel.onEvent(UIEvent.PrivacyPolicyCheckBoxClicked(it))
+                    }
+                )
+                Spacer(modifier = Modifier.height(80.dp))
+                ButtonComponent(value = stringResource(id = R.string.register),
+                    onButtonClicked = {
+                        if(signupViewModel.allvalidationspassed.value){
+                            signupViewModel.signUp()
+                            navController.navigate("home_screen")
+                        }
+                    }, isEnabled = signupViewModel.allvalidationspassed.value)
+                DividerTextComponent()
+                ClickableLoginTextComponent ( tryingtoLogin = true, onTextSelected = {
+                    navController.navigate("login_screen")
                 })
-            DividerTextComponent()
-            ClickableLoginTextComponent ( tryingtoLogin = true, onTextSelected = {
-                SmootheRouter.navigateTo(Screen.LoginScreen)
-            })
 
+            }
         }
-    }
-}
 
-@Preview
-@Composable
-fun DefaultPreviewofSignupScreen(){
-    SignupScreen()
+        if(signupViewModel.signupinprogress.value){
+            CircularProgressIndicator()
+        }
+
+
+    }
+    
 }
 
 @Composable
@@ -204,6 +215,7 @@ fun MyTextField(labelvalue: String, imageVector: ImageVector,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextField(labelvalue: String,
                       imageVector: ImageVector,
@@ -264,7 +276,7 @@ fun PasswordTextField(labelvalue: String,
     )
 }
 @Composable
-fun CheckboxComponent(value: String, onTextSelected: (String) -> Unit){
+fun CheckboxComponent(value: String, onTextSelected: (String) -> Unit, onCheckedChange :(Boolean)->Unit){
     Row(modifier = Modifier
         .fillMaxWidth()
         .heightIn(56.dp),
@@ -273,7 +285,11 @@ fun CheckboxComponent(value: String, onTextSelected: (String) -> Unit){
             mutableStateOf(false)
         }
         Checkbox(checked = checkedState.value,
-            onCheckedChange = {checkedState.value = !checkedState.value})
+            onCheckedChange = {
+                checkedState.value = !checkedState.value
+                onCheckedChange.invoke(it)
+            }
+        )
         ClickableTextComponent(value = value,onTextSelected)
     }
 }
@@ -293,7 +309,7 @@ fun ClickableTextComponent(value: String, onTextSelected: (String) -> Unit){
     }
     ClickableText(
         text = annotatedString,
-        onClick = { offset: Int -> annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.also {
+        onClick = { offset -> annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.also {
             Log.d("ClickableTextComponent", "ClickableTextComponent: $it")
 
             if (it.item == termsofusetext || it.item == privacypolicytext ){
@@ -304,13 +320,15 @@ fun ClickableTextComponent(value: String, onTextSelected: (String) -> Unit){
     )
 }
 @Composable
-fun ButtonComponent(value:String, onButtonClicked: () -> Unit){
+fun ButtonComponent(value:String, onButtonClicked: () -> Unit, isEnabled : Boolean){
     Button(onClick = { onButtonClicked.invoke() },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        shape = RoundedCornerShape(50.dp),
+        enabled = isEnabled
         ) {
         Box(modifier = Modifier
             .fillMaxWidth()
