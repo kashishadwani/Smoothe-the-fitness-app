@@ -23,6 +23,11 @@ object Validator {
             (!password.isNullOrEmpty()&& password.length>=4)
         )
     }
+    fun ValidatePrivacyPolicyAcceptance(statusvalue : Boolean):ValidationResult{
+        return ValidationResult(
+            statusvalue
+        )
+    }
 
 }
 

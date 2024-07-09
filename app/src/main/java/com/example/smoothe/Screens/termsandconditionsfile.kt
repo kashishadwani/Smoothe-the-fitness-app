@@ -17,14 +17,12 @@ import com.example.smoothe.R
 import com.example.smoothe.app.SmootheApp
 
 @Composable
-fun Termsandconditionsscreen(){
+fun Termsandconditionsscreen(navController: androidx.navigation.NavHostController){
     Surface(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.White)
         .padding(16.dp)) {
         HeadingtextComponent(value = stringResource(id = R.string.terms_and_conditions_header))
     }
-    SystemBackButtonHandler {
-        SmootheRouter.navigateTo(Screen.SignupScreen)
-    }
+    SystemBackButtonHandler (navController)
 }

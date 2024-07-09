@@ -6,6 +6,7 @@ sealed class UIEvent {
     data class EmailChange(val email: String): UIEvent()
     data class PasswordChange(val password: String): UIEvent()
 
+    data class PrivacyPolicyCheckBoxClicked(val status:Boolean): UIEvent()
     object RegisterButtonClicked : UIEvent()
 
 }
